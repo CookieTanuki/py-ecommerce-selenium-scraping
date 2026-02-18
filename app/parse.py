@@ -3,10 +3,11 @@ from dataclasses import dataclass, astuple
 from urllib.parse import urljoin
 
 from selenium import webdriver
-from selenium.common import (
+from selenium.common.exceptions import (
     NoSuchElementException,
     ElementNotInteractableException,
     ElementClickInterceptedException,
+    TimeoutException
 )
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
@@ -100,7 +101,7 @@ def scrap_single_page(driver: webdriver.Chrome, url: str) -> list[Product]:
     try:
         wait.until(
             ec.presence_of_element_located((By.CLASS_NAME, "card-body")))
-    except NoSuchElementException:
+    except (NoSuchElementException, TimeoutException):
         print(f"No products found on {url}")
         return []
 
@@ -126,6 +127,7 @@ def scrap_single_page(driver: webdriver.Chrome, url: str) -> list[Product]:
             NoSuchElementException,
             ElementNotInteractableException,
             ElementClickInterceptedException,
+            TimeoutException,
         ):
             break
 
